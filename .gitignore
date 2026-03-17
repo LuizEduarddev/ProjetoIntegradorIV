@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Environment files
+restaurant-api/.env
+restaurant-app/.env
+
+# Go
+restaurant-api/.gocache/
+restaurant-api/.gomodcache/
+restaurant-api/bin/
+restaurant-api/coverage.out
+
+# Node
+restaurant-app/node_modules/
+restaurant-app/.npm-cache/
+restaurant-app/.expo/
+restaurant-app/.expo-shared/
+restaurant-app/dist/
+
+# IDE
+.idea/
+.vscode/
