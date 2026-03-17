@@ -66,7 +66,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.New()
-	router.Use(gin.Recovery(), requestLogger(logger))
+	router.Use(middleware.CORSAllowAll(), gin.Recovery(), requestLogger(logger))
 
 	router.POST("/auth/login", authHandler.Login)
 

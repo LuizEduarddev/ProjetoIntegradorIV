@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,8 +18,8 @@ func NewAuthHandler(auth *service.AuthService) *AuthHandler {
 }
 
 type loginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type loginResponse struct {
@@ -34,6 +35,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	token, _, err := h.auth.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
+		log.Println(err)
 		writeServiceError(c, err)
 		return
 	}

@@ -29,7 +29,7 @@ func Load() (Config, error) {
 
 	cfg := Config{
 		Port:        getEnv("PORT", "8080"),
-		DatabaseURL: os.Getenv("DATABASE_URL"),
+		DatabaseURL: getFirstEnv("DATABASE_URL", "GOOSE_DBSTRING"),
 		JWTSecret:   os.Getenv("JWT_SECRET"),
 		JWTTTL:      time.Duration(jwtTTLHours) * time.Hour,
 		DBMaxConns:  int32(maxConns),
@@ -37,7 +37,7 @@ func Load() (Config, error) {
 	}
 
 	if cfg.DatabaseURL == "" {
-		return Config{}, errors.New("missing DATABASE_URL")
+		return Config{}, errors.New("missing DATABASE_URL or GOOSE_DBSTRING")
 	}
 	if cfg.JWTSecret == "" {
 		return Config{}, errors.New("missing JWT_SECRET")
@@ -64,4 +64,14 @@ func getEnvAsInt(key string, fallback int) (int, error) {
 		return 0, errors.New("invalid " + key)
 	}
 	return parsed, nil
+}
+
+func getFirstEnv(keys ...string) string {
+	for _, key := range keys {
+		v := os.Getenv(key)
+		if v != "" {
+			return v
+		}
+	}
+	return ""
 }

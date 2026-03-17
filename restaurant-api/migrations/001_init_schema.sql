@@ -16,9 +16,9 @@ CREATE TABLE users (
 
 INSERT INTO users (id, name, email, password, role)
 VALUES
-  ('11111111-1111-1111-1111-111111111111', 'Admin User', 'admin@restaurant.local', '$2y$12$ZmtOGr.bVwDdnyh54RB7COx0o8Z2e8fGNgbD8Nt6QGu7/YSziUmyy', 'admin'),
-  ('22222222-2222-2222-2222-222222222222', 'Waiter User', 'waiter@restaurant.local', '$2y$12$DAK/ZMyh9jQSzA/4GnNhTuHQyWJXCpdvKDJeTdVZZ/ukZCjLErBR2', 'waiter'),
-  ('33333333-3333-3333-3333-333333333333', 'Kitchen User', 'kitchen@restaurant.local', '$2y$12$xgfW9QyloeUSp/cOOPbPfOIBVTv0nNLEr.58b22Oy5XAxfXIhHNaC', 'kitchen');
+  ('11111111-1111-1111-1111-111111111111', 'Admin User',   'admin',   'Oidudu2235.', 'admin'),
+  ('22222222-2222-2222-2222-222222222222', 'Waiter User',  'waiter',  'Oidudu2235.', 'waiter'),
+  ('33333333-3333-3333-3333-333333333333', 'Kitchen User', 'kitchen', 'Oidudu2235.', 'kitchen');
 
 CREATE TABLE tables (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -30,6 +30,14 @@ CREATE TABLE tables (
   CONSTRAINT chk_table_status CHECK (status IN ('free', 'occupied', 'waiting', 'closed'))
 );
 
+INSERT INTO tables (id, number, status) VALUES
+  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 1, 'free'),
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 2, 'free'),
+  ('cccccccc-cccc-cccc-cccc-cccccccccccc', 3, 'free'),
+  ('dddddddd-dddd-dddd-dddd-dddddddddddd', 4, 'free'),
+  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 5, 'free'),
+  ('ffffffff-ffff-ffff-ffff-ffffffffffff', 6, 'free');
+
 CREATE TABLE products (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name        TEXT NOT NULL,
@@ -40,6 +48,18 @@ CREATE TABLE products (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+INSERT INTO products (id, name, description, price, category, available) VALUES
+  ('a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1', 'X-Burger',     'Beef burger with cheese and lettuce',        25.90, 'food',     TRUE),
+  ('b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2', 'X-Bacon',      'Beef burger with bacon and cheddar',         29.90, 'food',     TRUE),
+  ('c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3', 'Fries',        'Crispy salted french fries',                 12.00, 'food',     TRUE),
+  ('d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4', 'Onion Rings',  'Battered and fried onion rings',             14.00, 'food',     TRUE),
+  ('e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e5', 'Caesar Salad', 'Romaine lettuce, croutons, caesar dressing', 18.00, 'food',     TRUE),
+  ('f6f6f6f6-f6f6-f6f6-f6f6-f6f6f6f6f6f6', 'Coke 350ml',   'Chilled Coca-Cola can',                       7.00, 'beverage', TRUE),
+  ('a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7', 'Orange Juice', 'Freshly squeezed orange juice',               9.00, 'beverage', TRUE),
+  ('b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8', 'Water 500ml',  'Still mineral water',                         4.00, 'beverage', TRUE),
+  ('c9c9c9c9-c9c9-c9c9-c9c9-c9c9c9c9c9c9', 'Beer 600ml',   'Draft-style lager bottle',                   12.00, 'beverage', TRUE),
+  ('d0d0d0d0-d0d0-d0d0-d0d0-d0d0d0d0d0d0', 'Ice Cream',    'Two scoops vanilla or chocolate',            10.00, 'dessert',  TRUE);
 
 CREATE TABLE orders (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -65,10 +85,10 @@ CREATE TABLE order_items (
   CONSTRAINT chk_item_status CHECK (status IN ('pending', 'preparing', 'ready'))
 );
 
-CREATE INDEX idx_orders_table_id ON orders(table_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_waiter_id ON orders(waiter_id);
-CREATE INDEX idx_order_items_order ON order_items(order_id);
+CREATE INDEX idx_orders_table_id   ON orders(table_id);
+CREATE INDEX idx_orders_status     ON orders(status);
+CREATE INDEX idx_orders_waiter_id  ON orders(waiter_id);
+CREATE INDEX idx_order_items_order  ON order_items(order_id);
 CREATE INDEX idx_order_items_status ON order_items(status);
 -- +goose StatementEnd
 

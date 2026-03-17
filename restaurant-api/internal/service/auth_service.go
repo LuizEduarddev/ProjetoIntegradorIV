@@ -2,10 +2,8 @@ package service
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 
 	"restaurant-api/internal/auth"
 	"restaurant-api/internal/model"
@@ -35,11 +33,8 @@ func (s *AuthService) Login(ctx context.Context, email, password string) (string
 		return "", nil, err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-			return "", nil, ErrInvalidCredentials
-		}
-		return "", nil, err
+	if user.Password != password {
+		return "", nil, fmt.Errorf("Invalid password")
 	}
 
 	token, err := auth.GenerateToken(

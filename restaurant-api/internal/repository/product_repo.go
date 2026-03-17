@@ -164,12 +164,24 @@ func (r *ProductPGRepository) Update(ctx context.Context, id uuid.UUID, params U
 }
 
 func (r *ProductPGRepository) Delete(ctx context.Context, id uuid.UUID) error {
-	tag, err := r.db.Exec(ctx, `DELETE FROM products WHERE id = $1`, id)
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	_, err = tx.Exec(ctx, `DELETE FROM order_items WHERE product_id = $1`, id)
+	if err != nil {
+		return err
+	}
+
+	tag, err := tx.Exec(ctx, `DELETE FROM products WHERE id = $1`, id)
 	if err != nil {
 		return err
 	}
 	if tag.RowsAffected() == 0 {
 		return pgx.ErrNoRows
 	}
-	return nil
+
+	return tx.Commit(ctx)
 }

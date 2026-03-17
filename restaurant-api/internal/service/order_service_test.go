@@ -211,3 +211,24 @@ func TestOrderServiceCreateTableNotFound(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorIs(t, err, ErrTableNotFound)
 }
+
+func TestOrderServiceUpdateStatusIsIdempotent(t *testing.T) {
+	orderID := uuid.New()
+	tableID := uuid.New()
+
+	orderRepo := &orderRepoStub{
+		getOrder: &model.Order{
+			ID:      orderID,
+			TableID: tableID,
+			Status:  model.OrderSent,
+		},
+	}
+	tableRepo := &tableRepoStub{table: &model.Table{ID: tableID}}
+
+	svc := NewOrderService(orderRepo, tableRepo, &productRepoStub{})
+	order, err := svc.UpdateStatus(context.Background(), orderID, model.OrderSent)
+	require.NoError(t, err)
+	require.NotNil(t, order)
+	assert.Equal(t, model.OrderSent, order.Status)
+	assert.Equal(t, model.OrderStatus(""), orderRepo.updatedOrderState)
+}

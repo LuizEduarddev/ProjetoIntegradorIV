@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"github.com/google/uuid"
 
@@ -58,6 +59,7 @@ func (s *ProductService) Delete(ctx context.Context, id uuid.UUID) error {
 		if repository.IsNotFound(err) {
 			return ErrProductNotFound
 		}
+		log.Println(err)
 		return err
 	}
 	return nil

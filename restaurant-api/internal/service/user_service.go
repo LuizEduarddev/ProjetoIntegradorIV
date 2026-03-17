@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
-	"golang.org/x/crypto/bcrypt"
 
 	"restaurant-api/internal/model"
 	"restaurant-api/internal/repository"
@@ -32,15 +31,10 @@ func (s *UserService) Create(ctx context.Context, name, email, password string, 
 		return nil, ErrInvalidRole
 	}
 
-	hashed, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	if err != nil {
-		return nil, err
-	}
-
 	user, err := s.users.Create(ctx, repository.CreateUserParams{
 		Name:     name,
 		Email:    email,
-		Password: string(hashed),
+		Password: password,
 		Role:     role,
 	})
 	if err != nil {

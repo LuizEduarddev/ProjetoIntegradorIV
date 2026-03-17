@@ -182,6 +182,9 @@ func (s *OrderService) UpdateStatus(ctx context.Context, orderID uuid.UUID, targ
 	if !isValidOrderStatus(target) {
 		return nil, ErrInvalidOrderStatus
 	}
+	if order.Status == target {
+		return s.GetByID(ctx, orderID)
+	}
 	if !canTransitionOrder(order.Status, target) {
 		return nil, ErrInvalidOrderTransition
 	}

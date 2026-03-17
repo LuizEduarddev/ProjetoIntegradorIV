@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,14 +21,14 @@ func NewUserHandler(users *service.UserService) *UserHandler {
 
 type createUserRequest struct {
 	Name     string     `json:"name" binding:"required"`
-	Email    string     `json:"email" binding:"required,email"`
-	Password string     `json:"password" binding:"required,min=6"`
+	Email    string     `json:"email" binding:"required"`
+	Password string     `json:"password" binding:"required"`
 	Role     model.Role `json:"role" binding:"required"`
 }
 
 type updateUserRequest struct {
 	Name  string     `json:"name" binding:"required"`
-	Email string     `json:"email" binding:"required,email"`
+	Email string     `json:"email" binding:"required"`
 	Role  model.Role `json:"role" binding:"required"`
 }
 
@@ -49,6 +50,7 @@ func (h *UserHandler) Create(c *gin.Context) {
 
 	user, err := h.users.Create(c.Request.Context(), req.Name, req.Email, req.Password, req.Role)
 	if err != nil {
+		log.Println("failed during try to create user: %w", err)
 		writeServiceError(c, err)
 		return
 	}
