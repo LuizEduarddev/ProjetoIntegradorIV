@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Restaurant Management App (Monorepo)
 
 This repository contains:
@@ -70,4 +71,6 @@ Migrations insert three users:
 - Every other endpoint requires `Authorization: Bearer <jwt>`
 - JWT contains `user_id`, `email`, `role`
 - Backend does not enforce role-based authorization
+=======
+>>>>>>> a787598bea88cc24b6e644b132cf93256fe831f1
 # ProjetoIntegradorIV
