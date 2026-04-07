@@ -1,4 +1,3 @@
-// TableCard.tsx
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; 
@@ -6,8 +5,11 @@ import type { Table } from "../types";
 
 interface TableCardProps {
   table: Table;
+  scale?: (size: number) => number;
   onPress?: () => void;
 }
+
+const defaultScale = (size: number) => size;
 
 const getStatusStyles = (status: string) => {
   switch (status.toLowerCase()) {
@@ -25,24 +27,35 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-export function TableCard({ table, onPress }: TableCardProps): React.JSX.Element {
+export function TableCard({ table, scale = defaultScale, onPress }: TableCardProps): React.JSX.Element {
   const colors = getStatusStyles(table.status);
 
   return (
     <Pressable
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: colors.bg, borderColor: colors.border },
+        { 
+          backgroundColor: colors.bg, 
+          borderColor: colors.border,
+          borderRadius: scale(20),
+          padding: scale(16),
+        },
         pressed && styles.cardPressed
       ]}
       onPress={onPress}
     >
-      <View style={styles.iconContainer}>
-        <MaterialCommunityIcons name="table-furniture" size={36} color={colors.text} />
+      <View style={{ marginBottom: scale(12) }}>
+        <MaterialCommunityIcons 
+          name="table-furniture" 
+          size={scale(36)} // Scaling the icon specifically
+          color={colors.text} 
+        />
       </View>
-      <Text style={[styles.number, { color: colors.text }]}>Table {table.number}</Text>
-      <View style={[styles.badge, { backgroundColor: colors.border }]}>
-        <Text style={[styles.statusText, { color: colors.text }]}>
+      <Text style={[styles.number, { color: colors.text, fontSize: scale(18), marginBottom: scale(8) }]}>
+        Table {table.number}
+      </Text>
+      <View style={[styles.badge, { backgroundColor: colors.border, borderRadius: scale(12), paddingHorizontal: scale(10), paddingVertical: scale(4) }]}>
+        <Text style={[styles.statusText, { color: colors.text, fontSize: scale(10) }]}>
           {table.status.toUpperCase()}
         </Text>
       </View>
@@ -54,12 +67,10 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     aspectRatio: 1, 
-    borderRadius: 20,
     borderWidth: 1,
-    margin: 8,
-    padding: 16,
     justifyContent: "center",
     alignItems: "center",
+    // Shadows don't need scaling as they handle depth, not layout dimensions
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -68,24 +79,16 @@ const styles = StyleSheet.create({
   },
   cardPressed: {
     opacity: 0.7,
-    transform: [{ scale: 0.96 }],
-  },
-  iconContainer: {
-    marginBottom: 12,
+    transform: [{ scale: 0.96 }], // Keeping the interaction bounce untouched
   },
   number: {
-    fontSize: 18,
     fontWeight: "800",
-    marginBottom: 8,
     letterSpacing: 0.3,
   },
   badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+    // Layout handled inline with scale()
   },
   statusText: {
-    fontSize: 10,
     fontWeight: "700",
     letterSpacing: 0.5,
   }
